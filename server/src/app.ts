@@ -22,8 +22,14 @@ import { registerAdminUserRoutes } from './routes/adminUsers.js';
 import { registerNavItemRoutes } from './routes/nav-items.js';
 import { registerCertificateRoutes } from './routes/certificates.js';
 import { registerCourseAnalyticsRoutes } from './routes/courseAnalytics.js';
+import { registerAdminSchedulerRoutes } from './routes/adminScheduler.js';
+import { scheduler } from './scheduler/index.js';
 
-export async function buildApp(): Promise<FastifyInstance> {
+export interface BuildAppOptions {
+  enableScheduler?: boolean;
+}
+
+export async function buildApp(options: BuildAppOptions = {}): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
   app.setErrorHandler(errorHandler);
   app.setNotFoundHandler((request, reply) => {
@@ -65,6 +71,16 @@ export async function buildApp(): Promise<FastifyInstance> {
   registerNavItemRoutes(app);
   registerCertificateRoutes(app);
   registerCourseAnalyticsRoutes(app);
+  registerAdminSchedulerRoutes(app);
+
+  const shouldStartScheduler = options.enableScheduler ?? (process.env.NODE_ENV !== 'test');
+  if (shouldStartScheduler) {
+    scheduler.start(app.log);
+  }
+
+  app.addHook('onClose', async () => {
+    scheduler.stop();
+  });
 
   await app.ready();
   return app;

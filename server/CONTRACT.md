@@ -742,3 +742,43 @@ Yanıt: `Content-Type: text/csv; charset=utf-8` ve `Content-Disposition: attachm
 Dosya içeriği `\uFEFF` (UTF-8 BOM) ile başlar ve noktalı virgül (`;`) ile ayrılmış sütunlardan oluşur:
 `Öğrenci Adı;E-posta;Kayıt Tarihi;Tamamlanan Ders;Toplam Ders;İlerleme (%);Çalışma Süresi (Dk);Son Tamamlanan Ders;Durum`
 
+## Scheduler (Zamanlanmış / Aralıklı Arka Plan İşleri)
+
+Yalnızca `ADMIN` rolü erişebilir.
+
+### GET /api/v1/admin/scheduler
+Header: `Authorization: Bearer <token>` (rol: ADMIN)
+200:
+```json
+{
+  "isRunning": true,
+  "jobs": [
+    {
+      "name": "sync-announcements-exams",
+      "description": "Duyuru ve sınav durumlarını senkronize eder.",
+      "intervalMs": 300000,
+      "status": "IDLE" | "RUNNING" | "SUCCESS" | "ERROR",
+      "lastRun": "2026-10-14T11:50:00.000Z" | null,
+      "lastDurationMs": 14 | null,
+      "lastError": null | string,
+      "lastResult": object | null,
+      "runCount": 1
+    }
+  ]
+}
+```
+401: `UNAUTHORIZED` · 403: `FORBIDDEN`
+
+### POST /api/v1/admin/scheduler/run/:name
+Header: `Authorization: Bearer <token>` (rol: ADMIN)
+İlgili görevi anında tetikler.
+200: `{ "job": "sync-announcements-exams", "success": true, "result": { ... } }`
+401: `UNAUTHORIZED` · 403: `FORBIDDEN` · 404: `NOT_FOUND`
+
+### POST /api/v1/admin/scheduler/run-all
+Header: `Authorization: Bearer <token>` (rol: ADMIN)
+Tüm zamanlanmış işleri sırayla hemen çalıştırır.
+200: `{ "success": true, "results": { [jobName]: { ... } } }`
+401: `UNAUTHORIZED` · 403: `FORBIDDEN`
+
+
