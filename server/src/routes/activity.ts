@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '../lib/prisma.js';
 import { requireAuth } from '../middleware/rbac.js';
 import { AppError } from '../errors.js';
+import { awardBadge } from '../lib/badges.js';
 import { assertEnrolled, loadPublishedLesson } from '../lib/lessonAccess.js';
 import {
   ACTIVITY_TIMEZONE,
@@ -68,6 +69,19 @@ export function registerActivityRoutes(app: FastifyInstance) {
         } else {
           throw err;
         }
+      }
+
+      try {
+        const today = dayKey(new Date());
+        const activeDayRows = await prisma.studyActivity.groupBy({
+          by: ['day'],
+          where: { userId, day: { gte: addDays(today, -STREAK_LOOKBACK_DAYS), lte: today }, seconds: { gt: 0 } },
+        });
+        if (computeStreak(new Set(activeDayRows.map((row) => row.day)), today) >= 7) {
+          await awardBadge(userId, 'streak_7', null, '7 Gün Seri');
+        }
+      } catch (err) {
+        request.log.error({ err }, 'streak badge check failed');
       }
 
       return { recorded };

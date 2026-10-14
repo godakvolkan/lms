@@ -11,6 +11,7 @@ import { registerProgressRoutes } from './routes/progress.js';
 import { registerActivityRoutes } from './routes/activity.js';
 import { registerGradeRoutes } from './routes/grades.js';
 import { registerFeedbackRoutes } from './routes/feedback.js';
+import { registerCommentRoutes } from './routes/comments.js';
 import { registerCalendarRoutes } from './routes/calendar.js';
 import { registerAnnouncementRoutes } from './routes/announcements.js';
 import { registerQuestionBankRoutes } from './routes/questionBanks.js';
@@ -18,6 +19,7 @@ import { registerExamRoutes } from './routes/exams.js';
 import { registerUserRoutes } from './routes/users.js';
 import { registerAdminUserRoutes } from './routes/adminUsers.js';
 import { registerNavItemRoutes } from './routes/nav-items.js';
+import { registerCertificateRoutes } from './routes/certificates.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
@@ -50,6 +52,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   registerActivityRoutes(app);
   registerGradeRoutes(app);
   registerFeedbackRoutes(app);
+  registerCommentRoutes(app);
   registerCalendarRoutes(app);
   registerAnnouncementRoutes(app);
   registerQuestionBankRoutes(app);
@@ -57,6 +60,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   registerUserRoutes(app);
   registerAdminUserRoutes(app);
   registerNavItemRoutes(app);
+  registerCertificateRoutes(app);
 
   await app.ready();
   return app;

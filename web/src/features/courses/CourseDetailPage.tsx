@@ -84,6 +84,15 @@ export function CourseDetailPage() {
             </div>
           )}
 
+          {course.isEnrolled && course.progress?.percent === 100 && (
+            <p className={styles.completeBanner} role="status">
+              <Icon name="workspace_premium" filled />
+              <span>
+                Tebrikler! Bu kursu tamamladın. Sertifikan <Link to="/profil">profilinde</Link>.
+              </span>
+            </p>
+          )}
+
           {canManage && (
             <Panel title="Quiz Notları" icon="grading" className={styles.gradesPanel}>
               {quizLessons.length === 0 ? (
