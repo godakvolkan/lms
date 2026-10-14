@@ -158,3 +158,26 @@
   white-space: nowrap;
   border: 0;
 }
+
+.completeBanner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+  padding: var(--space-sm) var(--space-md);
+  color: var(--color-state-success);
+  background-color: var(--color-state-success-soft);
+  border-radius: var(--radius-default);
+}
+
+.completeBanner a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  border-radius: var(--radius-sm);
+}
+
+.completeBanner a:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}

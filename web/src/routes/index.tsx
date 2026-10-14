@@ -10,6 +10,8 @@ import { AnnouncementsPage, AnnouncementDetailPage, AnnouncementsAdminPage } fro
 import { AssignmentsPage } from '../features/assignments';
 import { ExamsPage } from '../features/exams';
 import { LoginPage, RegisterPage } from '../features/auth';
+import { CertificateVerifyPage } from '../features/certificates';
+import { PublicAchievementsPage } from '../features/achievements';
 import { ProfilePage } from '../features/profile';
 import {
   AdminCoursesPage,
@@ -98,4 +100,7 @@ export const router = createBrowserRouter([
       { path: 'kayit', element: <RegisterPage /> },
     ],
   },
+  // Herkese açık sayfalar: oturum gerektirmez, AppShell dışındadır.
+  { path: 'dogrula/:code', element: <CertificateVerifyPage /> },
+  { path: 'basarilar/:userId', element: <PublicAchievementsPage /> },
 ]);

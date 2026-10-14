@@ -3,6 +3,8 @@ import { prisma } from '../lib/prisma.js';
 import { requireAuth } from '../middleware/rbac.js';
 import { AppError } from '../errors.js';
 import { computeProgress } from '../lib/progress.js';
+import { issueCertificate } from '../lib/certificates.js';
+import { awardBadge } from '../lib/badges.js';
 import { assertEnrolled, loadPublishedLesson } from '../lib/lessonAccess.js';
 
 export function registerProgressRoutes(app: FastifyInstance) {
@@ -19,7 +21,17 @@ export function registerProgressRoutes(app: FastifyInstance) {
         create: { userId, lessonId: lesson.id },
         update: {},
       });
-      return { progress: await computeProgress(userId, courseId) };
+      const progress = await computeProgress(userId, courseId);
+      if (progress.percent === 100) {
+        try {
+          const course = await prisma.course.findUnique({ where: { id: courseId } });
+          await issueCertificate(userId, courseId);
+          await awardBadge(userId, 'course_complete', courseId, course?.title ?? '');
+        } catch (err) {
+          request.log.error({ err }, 'certificate/badge issuance failed');
+        }
+      }
+      return { progress };
     },
   );
 
