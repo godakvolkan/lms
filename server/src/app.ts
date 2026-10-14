@@ -20,6 +20,7 @@ import { registerUserRoutes } from './routes/users.js';
 import { registerAdminUserRoutes } from './routes/adminUsers.js';
 import { registerNavItemRoutes } from './routes/nav-items.js';
 import { registerCertificateRoutes } from './routes/certificates.js';
+import { registerCourseAnalyticsRoutes } from './routes/courseAnalytics.js';
 
 export async function buildApp(): Promise<FastifyInstance> {
   const app = Fastify({ logger: true });
@@ -61,6 +62,7 @@ export async function buildApp(): Promise<FastifyInstance> {
   registerAdminUserRoutes(app);
   registerNavItemRoutes(app);
   registerCertificateRoutes(app);
+  registerCourseAnalyticsRoutes(app);
 
   await app.ready();
   return app;

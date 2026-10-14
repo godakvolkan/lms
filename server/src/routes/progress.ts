@@ -5,7 +5,7 @@ import { AppError } from '../errors.js';
 import { computeProgress } from '../lib/progress.js';
 import { issueCertificate } from '../lib/certificates.js';
 import { awardBadge } from '../lib/badges.js';
-import { assertEnrolled, loadPublishedLesson } from '../lib/lessonAccess.js';
+import { assertEnrolled, loadPublishedLesson, assertLessonUnlocked } from '../lib/lessonAccess.js';
 
 export function registerProgressRoutes(app: FastifyInstance) {
   app.put<{ Params: { id: string } }>(
@@ -16,6 +16,7 @@ export function registerProgressRoutes(app: FastifyInstance) {
       const lesson = await loadPublishedLesson(request.params.id);
       const courseId = lesson.module.courseId;
       await assertEnrolled(userId, courseId);
+      await assertLessonUnlocked(userId, lesson.id, request.user);
       await prisma.lessonProgress.upsert({
         where: { userId_lessonId: { userId, lessonId: lesson.id } },
         create: { userId, lessonId: lesson.id },

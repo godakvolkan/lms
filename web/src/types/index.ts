@@ -195,6 +195,7 @@ export interface CourseLessonSummary {
   contentUrl: string | null;
   order: number;
   status: string;
+  isLocked?: boolean;
 }
 
 export interface CourseModuleSummary {

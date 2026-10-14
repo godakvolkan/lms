@@ -4,7 +4,7 @@ import { prisma } from '../lib/prisma.js';
 import { requireAuth } from '../middleware/rbac.js';
 import { AppError } from '../errors.js';
 import { awardBadge } from '../lib/badges.js';
-import { assertEnrolled, loadPublishedLesson } from '../lib/lessonAccess.js';
+import { assertEnrolled, loadPublishedLesson, assertLessonUnlocked } from '../lib/lessonAccess.js';
 import {
   ACTIVITY_TIMEZONE,
   MAX_HEARTBEAT_SECONDS,
@@ -47,6 +47,7 @@ export function registerActivityRoutes(app: FastifyInstance) {
       const lesson = await loadPublishedLesson(lessonId);
       const courseId = lesson.module.courseId;
       await assertEnrolled(userId, courseId);
+      await assertLessonUnlocked(userId, lesson.id, request.user);
 
       const recorded = Math.min(seconds, MAX_HEARTBEAT_SECONDS);
       const key = { userId, day: dayKey(new Date()), courseId, category: categoryFor(lesson.contentType) };

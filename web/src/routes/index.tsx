@@ -18,6 +18,7 @@ import {
   CourseStudentsPage,
   CourseContentPage,
   QuizGradesPage,
+  CourseAnalyticsPage,
 } from '../features/admin/courses';
 import { AdminNavItemsPage } from '../features/admin/nav-items';
 import { AdminUsersPage } from '../features/admin/users';
@@ -73,6 +74,7 @@ export const router = createBrowserRouter([
             // Quiz notlarını yöneticiler ve kursa atanmış eğitmenler girer (sunucu ayrıca yetki denetler).
             element: <RequireRole allow={['ADMIN', 'INSTRUCTOR']} />,
             children: [
+              { path: 'yonetim/kurslar/:id/analitik', element: <CourseAnalyticsPage /> },
               { path: 'yonetim/kurslar/:courseId/dersler/:lessonId/notlar', element: <QuizGradesPage /> },
               { path: 'yonetim/duyurular', element: <AnnouncementsAdminPage /> },
               { path: 'yonetim/sinavlar', element: <AdminExamsPage /> },
